@@ -9,8 +9,7 @@
 
     <style>
         :root {
-            /* Màu chủ đạo */
-            --primary: #cba36f; /* Đổi màu hơi hướng thảo mộc/vintage cho hợp với túi thơm */
+            --primary: #cba36f; 
             --secondary: #8b5e34;
         }
 
@@ -43,7 +42,6 @@
             color: white; box-shadow: 0 5px 15px rgba(139, 94, 52, 0.3);
         }
         
-        /* Trạng thái nút mua ngay khi chưa chọn giỏ hàng */
         .btn-disabled {
             background: #cccccc !important;
             color: #888888 !important;
@@ -71,7 +69,6 @@
 <body>
 
     <div id="productPage" class="container">
-        
         <div class="swiper mySwiper">
             <div class="swiper-wrapper">
                 <div class="swiper-slide">
@@ -87,12 +84,10 @@
         </div>
         <div class="content">
             <h2>TÚI THƠM THIÊN NHIÊN – KHÔNG GIAN NGÁT HƯƠNG, TINH THẦN THƯ THÁI</h2>
-            
             <p class="description">
                 Bạn muốn tủ quần áo, ô tô hay phòng ngủ luôn thơm mát mà không cần dùng đến hóa chất nồng gắt? Túi thơm 100% nguyên liệu tự nhiên chính là giải pháp hoàn hảo cho bạn!
-                <span class="highlight-text">"Inbox ngay cho chúng mình để chọn mùi hương thư giãn phù hợp nhất với bạn nhé!"</span>
+                <span class="highlight-text">"Nhập thông tin mua ngay để chúng mình ship liền cho bạn nhé!"</span>
             </p>
-            
             <button class="btn btn-cart" onclick="openModal()">🛒 Chọn phân loại giỏ hàng</button>
             <button id="buyBtn" class="btn btn-buy btn-disabled" onclick="goToCheckout()">Mua ngay</button>
         </div>
@@ -119,37 +114,31 @@
             Giỏ hàng: <span id="displaySelectedOption">Chưa chọn</span>
         </p>
         
-        <form action="https://formsubmit.co/cungduoctruongthi@gmail.com" method="POST">
-            
-            <input type="hidden" name="_subject" value="[ĐƠN HÀNG MỚI] - Túi Thơm Thiên Nhiên">
-            <input type="hidden" name="_captcha" value="false">
-            
-            <input type="hidden" name="Gói_Đã_Chọn" id="hiddenOptionInput" value="">
-            
+        <div id="orderForm">
             <div class="form-group">
                 <label>Tên khách hàng *</label>
-                <input type="text" name="Họ_Tên" required placeholder="Nhập họ và tên...">
+                <input type="text" id="txt_HoTen" required placeholder="Nhập họ và tên...">
             </div>
             
             <div class="form-group">
                 <label>Số điện thoại *</label>
-                <input type="tel" name="Số_Điện_Thoại" required placeholder="Nhập số điện thoại liên hệ...">
+                <input type="tel" id="txt_DienThoai" required placeholder="Nhập số điện thoại liên hệ...">
             </div>
 
             <div class="form-group">
                 <label>Địa chỉ nhận hàng *</label>
-                <textarea name="Địa_Chỉ" rows="3" required placeholder="Số nhà, tên đường, phường/xã, quận/huyện..."></textarea>
+                <textarea id="txt_DiaChi" rows="3" required placeholder="Số nhà, tên đường, phường/xã, quận/huyện..."></textarea>
             </div>
 
             <div class="form-group">
                 <label>Email (Gmail) *</label>
-                <input type="email" name="Email" required placeholder="Nhập địa chỉ email của bạn...">
+                <input type="email" id="txt_Email" required placeholder="Nhập địa chỉ email của bạn...">
             </div>
 
             <div style="display: flex; gap: 15px;">
                 <div class="form-group" style="flex: 1;">
                     <label>Mùi hương *</label>
-                    <select name="Mùi_Hương" required>
+                    <select id="txt_MuiHuong" required>
                         <option value="" disabled selected>-- Chọn mùi --</option>
                         <option value="Hoa Hồng Quyến Rũ">Hoa Hồng</option>
                         <option value="Lavender Oải Hương">Lavender</option>
@@ -161,27 +150,26 @@
                 
                 <div class="form-group" style="width: 100px;">
                     <label>Số lượng *</label>
-                    <input type="number" name="Số_Lượng_Gói" min="1" value="1" required>
+                    <input type="number" id="txt_SoLuong" min="1" value="1" required>
                 </div>
             </div>
 
             <div class="form-group">
                 <label>Phương thức thanh toán *</label>
-                <select name="Thanh_Toán" required>
+                <select id="txt_ThanhToan" required>
                     <option value="Trả bằng tiền mặt khi nhận hàng (COD)">Trả bằng tiền mặt khi nhận hàng (COD)</option>
                     <option value="Chuyển khoản trước">Chuyển khoản</option>
                 </select>
             </div>
             
-            <button type="submit" class="btn btn-buy" style="margin-top: 15px;">Hoàn tất đặt hàng</button>
+            <button type="button" class="btn btn-buy" style="margin-top: 15px;" onclick="guiDonQuaMessenger()">Hoàn tất đặt hàng (Gửi qua Messenger)</button>
             <button type="button" class="btn btn-cart" onclick="backToProduct()">Quay lại xem sản phẩm</button>
-        </form>
+        </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 
     <script>
-        // Kích hoạt Slider ảnh
         var swiper = new Swiper(".mySwiper", {
             loop: true,
             autoplay: {
@@ -202,15 +190,11 @@
             if(selectedRadio) {
                 selectedOption = selectedRadio.value;
                 isOptionChosen = true;
-                
-                // Cập nhật dữ liệu
-                document.getElementById('hiddenOptionInput').value = selectedOption;
                 document.getElementById('displaySelectedOption').innerText = selectedOption;
                 
-                // Mở khóa nút mua ngay
                 const buyBtn = document.getElementById('buyBtn');
                 buyBtn.classList.remove('btn-disabled');
-                buyBtn.innerText = "Mua ngay (" + selectedOption.split(' ')[0] + ")"; // Rút gọn chữ hiển thị trên nút
+                buyBtn.innerText = "Mua ngay (" + selectedOption.split(' ')[0] + ")";
             } else {
                 alert("Bạn chưa chọn gói nào cả!");
                 return;
@@ -223,16 +207,48 @@
                 alert("Vui lòng ấn 'Chọn phân loại giỏ hàng' trước khi Mua ngay nhé!");
                 return;
             }
-            // Chuyển trang
             document.getElementById('productPage').classList.add('hidden');
             document.getElementById('checkoutPage').classList.remove('hidden');
-            window.scrollTo(0, 0); // Cuộn lên đầu trang
+            window.scrollTo(0, 0);
         }
 
         function backToProduct() {
             document.getElementById('checkoutPage').classList.add('hidden');
             document.getElementById('productPage').classList.remove('hidden');
             window.scrollTo(0, 0);
+        }
+
+        function guiDonQuaMessenger() {
+            const hoTen = document.getElementById('txt_HoTen').value;
+            const sdt = document.getElementById('txt_DienThoai').value;
+            const diaChi = document.getElementById('txt_DiaChi').value;
+            const email = document.getElementById('txt_Email').value;
+            const muiHuong = document.getElementById('txt_MuiHuong').value;
+            const soLuong = document.getElementById('txt_SoLuong').value;
+            const thanhToan = document.getElementById('txt_ThanhToan').value;
+
+            if(!hoTen || !sdt || !diaChi || !email || !muiHuong) {
+                alert("Vui lòng điền đầy đủ thông tin bắt buộc (*) trước khi đặt hàng nha ông!");
+                return;
+            }
+
+            let noiDung = `📦 ĐƠN HÀNG TÚI THƠM MỚI:\n`;
+            noiDung += `-------------------------\n`;
+            noiDung += `+ Phân loại gói: ${selectedOption}\n`;
+            noiDung += `+ Khách hàng: ${hoTen}\n`;
+            noiDung += `+ Số điện thoại: ${sdt}\n`;
+            noiDung += `+ Địa chỉ nhận: ${diaChi}\n`;
+            noiDung += `+ Email khách: ${email}\n`;
+            noiDung += `+ Mùi hương chọn: ${muiHuong}\n`;
+            noiDung += `+ Số lượng đặt: ${soLuong} gói\n`;
+            noiDung += `+ Thanh toán: ${thanhToan}`;
+
+            const textMaHoa = encodeURIComponent(noiDung);
+            
+            // THAY TÊN ĐUÔI LINK FACEBOOK HOẶC FANPAGE CỦA ÔNG VÀO CHỖ "thuclee2505" NÀY NHÉ:
+            const linkMessenger = "https://m.me/duoctruong?text=" + textMaHoa;
+
+            window.open(linkMessenger, '_blank');
         }
     </script>
 </body>
